@@ -1,7 +1,7 @@
 import { intro, outro, note } from "@clack/prompts";
 import pc from "picocolors";
 import { git } from "../git/index.js";
-import { PM } from "../config.js";
+import { PM, OPENAI_API_KEY, SHEET_WEBHOOK_URL } from "../config.js";
 
 export const ui = {
   die: (msg) => {
@@ -21,8 +21,8 @@ export const ui = {
 
     // --- Services Check ---
     const services = [];
-    if (process.env.OPENAI_API_KEY) services.push("AI");
-    if (process.env.GOOGLE_SHEET_WEBHOOK_URL) services.push("Sheets");
+    if (OPENAI_API_KEY) services.push("🤖 AI");
+    if (SHEET_WEBHOOK_URL) services.push("📊 Sheets");
 
     if (services.length > 0) {
       console.log(pc.dim(`⚡ Services: ${services.join(" + ")}`));

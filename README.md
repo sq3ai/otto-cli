@@ -1,297 +1,178 @@
-# Otto CLI - A Project by Sequence3
+# Otto - A Project by Sequence3
 
-**AI-powered Git Release and Automation Tool**
+> AI-Powered Git Automation & Release Tool
 
-Otto is a command-line tool that automates your git workflow. It generates conventional commit messages using AI, manages semantic versioning, handles branch management, and logs every release to a Google Sheet automatically.
+Otto is a powerful CLI that automates your git workflow while keeping everything organized. It uses AI to write conventional commit messages, manages semantic versioning, simplifies branch management, and automatically logs every release to a Google Sheet.
 
----
+[![npm version](https://img.shields.io/npm/v/otto-cli.svg)](https://www.npmjs.com/package/otto-cli)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Table of Contents
 
 - [Quick Start](#quick-start)
-- [Installation](#installation)
 - [Configuration](#configuration)
-- [Commands](#commands)
-- [Features](#features)
-- [Google Sheets Setup](#google-sheets-setup-optional)
-- [Project Structure](#project-structure)
-- [Requirements](#requirements)
-- [License](#license)
+- [Key Features](#key-features)
+- [Usage & Commands](#usage--commands)
+- [Google Sheets Integration](#google-sheets-integration)
+- [Comparison](#why-otto)
 
 ---
 
 ## Quick Start
 
-Run directly with npx (no installation required):
+You can run Otto directly without installation:
 
 ```bash
 npx otto-cli
 ```
 
-Or install globally:
+Or install it globally for daily use:
 
 ```bash
 npm install -g otto-cli
-otto-cli
-```
-
-Note: Ensure you are inside a Git repository.
-
----
-
-## Installation
-
-### Using npm
-
-```bash
-npm install -g otto-cli
-```
-
-### Using pnpm
-
-```bash
+# or
 pnpm add -g otto-cli
 ```
 
-### From Source
-
-```bash
-git clone https://github.com/your-username/otto-cli.git
-cd otto-cli
-pnpm install
-node index.js
-```
+Once installed, simply run `otto-cli` or `otto` in any git repository to start the interactive menu.
 
 ---
 
 ## Configuration
 
-Otto requires an OpenAI API key to generate commit messages. Optionally, you can connect a Google Sheet to log your releases.
+Otto is designed to be zero-friction. When you run it for the first time, it will interactively ask for the necessary credentials and save them securely to your global configuration (`~/.otto-cli/config.json`).
 
-### Environment Variables
+**Required:**
 
-| Variable                   | Required | Description                                        |
-| -------------------------- | -------- | -------------------------------------------------- |
-| `OPENAI_API_KEY`           | Yes      | Your OpenAI API key for AI-powered commit messages |
-| `GOOGLE_SHEET_WEBHOOK_URL` | No       | Google Apps Script URL for release logging         |
+- **OpenAI API Key**: Used to analyze diffs and generate commit messages.
 
-### Option 1: Using .env File (Recommended)
+**Optional:**
 
-Create a `.env` file in your project root:
+- **Google Sheets Webhook URL**: Used to log release history automatically.
 
-```ini
-OPENAI_API_KEY=sk-proj-xxxxxxxxxxxxxxxxxxx
-GOOGLE_SHEET_WEBHOOK_URL=https://script.google.com/macros/s/xxxx/exec
-```
-
-### Option 2: Using Terminal Exports
+You can modify these settings at any time by running:
 
 ```bash
-export OPENAI_API_KEY="sk-proj-xxxxxxxx"
-export GOOGLE_SHEET_WEBHOOK_URL="https://script.google.com/..."
-
-npx otto-cli
+otto-cli settings
 ```
+
+Or selecting "⚙️ Settings" from the main menu.
 
 ---
 
-## Commands
+## Key Features
 
-Otto can be run interactively or with direct commands.
+### 🤖 AI-Powered Commits
+
+Stop writing "fix bug" or "update". Otto analyzes your staged changes using GPT-4o-mini and generates descriptive, conventional commit messages and technical descriptions automatically.
+
+### 🏷️ Semantic Versioning
+
+- Automatically suggests user-friendly version bumps (Patch, Minor, Major).
+- Supports snapshot/canary releases.
+- Creates annotated git tags.
+
+### 📊 Release Logging
+
+Keep a permanent record of every deployment. Otto sends a structured payload (User, Branch, Version, Commit Message, Technical Description) to your Google Sheet.
+
+### 🌿 Smart Branch Management
+
+- **Safe Switch**: Automatically stashes changes before switching branches and pops them after.
+- **Easy PRs**: Open a Pull Request for your current branch with one click.
+- **Cleanup**: Delete old local branches easily.
+
+### ⏪ Visual Undo & Rollback
+
+Mistakes happen. Otto provides a clean, visual history of your recent commits and allows you to perform Soft, Mixed, or Hard resets safely with confirmation prompts.
+
+---
+
+## Usage & Commands
+
+You can use Otto in **Interactive Mode** (recommended) or via **Direct Commands**.
 
 ### Interactive Mode
 
-```bash
-otto-cli
-```
+Just type `otto` or `otto-cli` to enter the interactive dashboard.
 
-This opens the main menu with all available options.
+### CLI Commands
 
-### Direct Commands
-
-| Command              | Description                                          |
-| -------------------- | ---------------------------------------------------- |
-| `otto-cli release`   | Run the full release flow (build, commit, tag, push) |
-| `otto-cli build`     | Install dependencies and run the build script        |
-| `otto-cli branch`    | Open the branch manager (switch, create, update, PR) |
-| `otto-cli stash`     | Open the stash manager (save and pop stashes)        |
-| `otto-cli undo`      | Rollback to a previous commit                        |
-| `otto-cli sync`      | Fetch and pull latest changes from remote            |
-| `otto-cli --help`    | Display help information                             |
-| `otto-cli --version` | Display version number                               |
+| Command         | Description                                                 |
+| :-------------- | :---------------------------------------------------------- |
+| `otto release`  | **The Core Flow**: Build -> AI Commit -> Tag -> Push -> Log |
+| `otto build`    | Run `install` and `build` scripts from package.json         |
+| `otto branch`   | Manage branches (Switch, Create, Delete, PR)                |
+| `otto stash`    | Interactive stash management (Save, Apply, Drop)            |
+| `otto undo`     | Visual commit history and rollback/reset tool               |
+| `otto sync`     | Fetch and Pull changes with one command                     |
+| `otto settings` | View or update API keys and configurations                  |
 
 ---
 
-## Features
+## Google Sheets Integration
 
-### Release Flow
+To enable the automatic changelog/release logger, follow these steps to deploy a simple Webhook.
 
-The release command provides a complete automated release pipeline:
-
-- **AI-Powered Commits**: Analyzes your staged changes and generates conventional commit messages with technical descriptions using OpenAI GPT-4o-mini.
-- **Semantic Versioning**: Automatically bumps version (patch, minor, major) or creates snapshot releases.
-- **Build Pipeline**: Runs `npm install` / `pnpm install` and executes your build script if present.
-- **Push Options**: Choose between safe push or force push to remote.
-- **Automatic Logging**: Logs release details to your connected Google Sheet.
-- **Rollback on Failure**: If push fails, automatically reverts the commit and tag.
-
-### Build Command
-
-Run your project's build pipeline without releasing:
-
-- Installs project dependencies
-- Executes the build script from package.json
-- Provides clear feedback if no build script exists
-
-### Branch Manager
-
-Efficient branch management with smart features:
-
-- **Smart Switch**: Automatically stashes uncommitted changes, switches branches, and restores them.
-- **Create Branch**: Quickly create new branches from the current HEAD.
-- **Update Branch**: Pull latest changes from main into your current branch.
-- **Open PR**: Opens a new Pull Request page in your browser for the current branch.
-
-### Stash Manager
-
-Simplified stash operations:
-
-- **Save**: Stash current changes with an optional custom message.
-- **Pop**: View all stashes and select which one to apply.
-- **Conflict Handling**: Clear messaging when stash pop results in merge conflicts.
-
-### Rollback (Undo)
-
-Visual history management and reset operations:
-
-- **Visual Log**: See a clean list of the last 15 commits with author and time.
-- **Reset Modes**: Choose between Soft (keep staged), Mixed (keep in working dir), or Hard (destroy changes) reset.
-- **Safety Confirmation**: Hard reset requires explicit confirmation to prevent accidental data loss.
-
-### Sync
-
-Keep your branch up to date:
-
-- **Auto-Detection**: On startup, checks if your local branch is behind remote.
-- **One-Click Pull**: Prompts you to pull changes before you start working.
-- **Upstream Configuration**: Automatically configures upstream tracking for branches.
-
-### Smart Features
-
-- **Package Manager Detection**: Automatically detects whether to use npm or pnpm based on lock files.
-- **Service Status**: Shows connected services (AI, Sheets) on startup.
-- **Branch Status**: Displays current branch, HEAD commit, and commits behind origin.
-
----
-
-## Google Sheets Setup (Optional)
-
-To enable automatic release logging, follow these steps:
-
-### Step 1: Create a New Sheet
+### 1. Create the Sheet
 
 Go to [sheets.new](https://sheets.new) and create a blank spreadsheet.
 
-### Step 2: Open Apps Script
+### 2. Add the Script
 
-Click **Extensions** > **Apps Script**.
-
-### Step 3: Add the Script
-
-Delete any existing code and paste the following:
+Click **Extensions** > **Apps Script** in the top menu. Remove any existing code and paste this:
 
 ```javascript
 function doPost(e) {
-  try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    const data = JSON.parse(e.postData.contents);
+  const sheet = SpreadsheetApp.getActiveSheet();
+  const data = JSON.parse(e.postData.contents);
 
-    // Columns: Timestamp | User | Branch | Type | Commit Msg | Technical Description
-    sheet.appendRow([
-      new Date(),
-      data.user,
-      data.branch,
-      data.type,
-      data.message,
-      data.description,
-    ]);
+  // Appends: Timestamp | User | Branch | Type | Message | Description
+  sheet.appendRow([
+    new Date(),
+    data.user,
+    data.branch,
+    data.type,
+    data.message,
+    data.description,
+  ]);
 
-    return ContentService.createTextOutput(
-      JSON.stringify({ status: "success" }),
-    ).setMimeType(ContentService.MimeType.JSON);
-  } catch (error) {
-    return ContentService.createTextOutput(
-      JSON.stringify({ status: "error", message: error.toString() }),
-    ).setMimeType(ContentService.MimeType.JSON);
-  }
+  return ContentService.createTextOutput(
+    JSON.stringify({ status: "success" }),
+  ).setMimeType(ContentService.MimeType.JSON);
 }
 ```
 
-### Step 4: Deploy as Web App
+### 3. Deploy
 
-1. Click the **Deploy** button (top right) > **New deployment**.
-2. Click the gear icon (Select type) > **Web app**.
-3. Set **Description** to "Otto Logger".
-4. Set **Execute as** to "Me" (your email).
-5. Set **Who has access** to "Anyone" (required for the CLI to POST data).
+1. Click the blue **Deploy** button > **New deployment**.
+2. Click the gear icon next to "Select type" and choose **Web app**.
+3. Description: `Otto Logger`
+4. Execute as: **Me**
+5. Who has access: **Anyone** (Important! This allows the CLI to send data without OAuth complexity).
 6. Click **Deploy**.
 
-### Step 5: Get the URL
+### 4. Configure Otto
 
-Copy the **Web app URL** (starts with `https://script.google.com/...`) and add it to your environment variables as `GOOGLE_SHEET_WEBHOOK_URL`.
-
----
-
-## Project Structure
-
-```
-otto-cli/
-├── index.js              # CLI entry point
-├── package.json
-└── src/
-    ├── index.js          # Main menu and CLI setup
-    ├── config.js         # Environment configuration
-    ├── utils/
-    │   ├── shell.js      # Shell command execution
-    │   └── text.js       # Text utilities
-    ├── git/
-    │   └── index.js      # Git helper functions
-    ├── ui/
-    │   └── index.js      # Terminal UI components
-    ├── services/
-    │   ├── sheets.js     # Google Sheets integration
-    │   └── ai.js         # OpenAI integration
-    └── commands/
-        ├── release.js    # Release flow
-        ├── build.js      # Build flow
-        ├── branch.js     # Branch management
-        ├── stash.js      # Stash management
-        ├── undo.js       # Rollback flow
-        ├── sync.js       # Sync flow
-        └── updates.js    # Update checking
-```
+Copy the **Web app URL** (it starts with `https://script.google.com/...`).
+Run `otto settings` and paste the URL when prompted.
 
 ---
 
-## Requirements
+## Why Otto?
+
+Most release tools are just scripts. Otto is an **intelligent assistant**.
+
+- It doesn't just bump versions; it documents _why_ the version changed.
+- It doesn't just checkout branches; it protects your work-in-progress.
+- It doesn't just run builds; it ensures you're synced with remote first.
+
+### Requirements
 
 - Node.js 18.0.0 or higher
-- Git installed and configured
-- OpenAI API key
+- Git
 
 ---
 
-## Dependencies
-
-- **commander**: CLI framework
-- **@clack/prompts**: Interactive prompts
-- **picocolors**: Terminal colors
-- **openai**: OpenAI API client
-- **dotenv**: Environment variable loading
-
----
-
-## Links
-
-- [Report Issues](https://github.com/your-username/otto-cli/issues)
-- [npm Package](https://www.npmjs.com/package/otto-cli)
+**Otto** is a project by **Sequence3**.
+[GitHub](https://github.com/sq3ai/otto-cli) | [Issues](https://github.com/sq3ai/otto-cli/issues)

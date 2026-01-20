@@ -1,6 +1,7 @@
 import { Command } from "commander";
 import { select, isCancel, outro } from "@clack/prompts";
 import { ui } from "./ui/index.js";
+import { ensureConfig } from "./utils/setup.js";
 import {
   checkForUpdates,
   flowRelease,
@@ -9,6 +10,7 @@ import {
   flowUndo,
   flowSync,
   flowBuild,
+  flowSettings,
 } from "./commands/index.js";
 
 /**
@@ -16,6 +18,7 @@ import {
  */
 async function mainMenu() {
   ui.banner();
+  await ensureConfig();
   await checkForUpdates();
 
   while (true) {
@@ -28,6 +31,7 @@ async function mainMenu() {
         { value: "stash", label: "📦 Stash", hint: "Save & Pop Changes" },
         { value: "undo", label: "⏪ Rollback", hint: "Rollback Commits" },
         { value: "sync", label: "🔄 Sync", hint: "Fetch & Pull latest" },
+        { value: "settings", label: "⚙️. Settings", hint: "Config API & Sheets" },
         { value: "quit", label: "🚪 Quit" },
       ],
     });
@@ -44,6 +48,7 @@ async function mainMenu() {
       if (op === "stash") await flowStash();
       if (op === "undo") await flowUndo();
       if (op === "sync") await flowSync();
+      if (op === "settings") await flowSettings();
     } catch (e) {
       const { note } = await import("@clack/prompts");
       note(e.message, "⚠ Unexpected Error");
@@ -62,6 +67,7 @@ export async function run() {
 
   program.command("release").action(async () => {
     ui.banner();
+    await ensureConfig();
     await checkForUpdates();
     await flowRelease();
   });
@@ -88,6 +94,13 @@ export async function run() {
     ui.banner();
     await checkForUpdates();
     await flowSync();
+  });
+
+  program.command("settings").action(async () => {
+    ui.banner();
+    await ensureConfig();
+    await checkForUpdates();
+    await flowSettings();
   });
 
   program.command("build").action(async () => {

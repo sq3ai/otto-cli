@@ -5,3 +5,4 @@ export { flowStash } from "./stash.js";
 export { flowUndo } from "./undo.js";
 export { flowSync } from "./sync.js";
 export { flowBuild } from "./build.js";
+export { flowSettings } from "./settings.js";
