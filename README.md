@@ -291,18 +291,6 @@ otto-cli/
 
 ---
 
-## License
-
-MIT License
-
----
-
-## Author
-
-Thevindu W.
-
----
-
 ## Links
 
 - [Report Issues](https://github.com/your-username/otto-cli/issues)
