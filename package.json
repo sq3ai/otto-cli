@@ -8,7 +8,8 @@
     "otto-cli": "./index.js"
   },
   "files": [
-    "index.js"
+    "index.js",
+    "src/"
   ],
   "scripts": {
     "start": "node index.js"
