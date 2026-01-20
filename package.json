@@ -1,7 +1,7 @@
 {
   "name": "otto-cli",
   "version": "4.0.0",
-  "description": "AI-powered Release CLI",
+  "description": "AI-powered Git Release & Automation Tool",
   "main": "index.js",
   "type": "module",
   "bin": {

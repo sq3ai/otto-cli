@@ -1,4 +1,4 @@
-# Otto CLI
+# Otto CLI - A Project by Sequence3
 
 **AI-powered Git Release and Automation Tool**
 
