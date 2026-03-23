@@ -12,7 +12,8 @@
     "src/"
   ],
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "build": "node --check index.js"
   },
   "keywords": [
     "cli",
