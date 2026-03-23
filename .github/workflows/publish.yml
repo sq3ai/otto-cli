@@ -52,7 +52,8 @@ jobs:
           fi
           echo "$NAME@$VER not found on npm. Continuing."
 
+      # Publishes via npm trusted publishing (OIDC). Configure on npm:
+      # Package → Settings → Trusted publishing → GitHub Actions
+      # (workflow file: publish.yml, repo, owner; optional environment: release)
       - name: Publish
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public
