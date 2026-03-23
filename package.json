@@ -1,10 +1,11 @@
 {
-  "name": "otto-cli",
+  "name": "otto-git-cli",
   "version": "4.0.4",
   "description": "AI-powered Git Release & Automation Tool",
   "main": "index.js",
   "type": "module",
   "bin": {
+    "otto-git-cli": "index.js",
     "otto-cli": "index.js"
   },
   "files": [
