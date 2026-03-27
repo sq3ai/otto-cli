@@ -65,12 +65,14 @@ export async function flowBranch() {
 
   if (action === "update") {
     const s = spinner();
-    s.start(pc.dim("Fetching main"));
+    const defaultBr = git.defaultBranch();
+    const branchName = defaultBr ? defaultBr.replace("origin/", "") : "main";
+    s.start(pc.dim(`Fetching ${branchName}`));
     try {
-      sh("git fetch origin main");
+      sh(`git fetch origin ${branchName}`);
       s.message(pc.dim("Pulling changes"));
-      sh("git pull origin main");
-      s.stop(pc.green("✔ Branch updated from main"));
+      sh(`git pull origin ${branchName}`);
+      s.stop(pc.green(`✔ Branch updated from ${branchName}`));
     } catch (e) {
       s.stop(pc.red("✖ Update Failed"));
       note(e.message, "Git Error");
@@ -81,6 +83,10 @@ export async function flowBranch() {
     const name = await text({
       message: "Branch Name",
       placeholder: "feat/new-thing",
+      validate: (v) => {
+        if (!v) return "Branch name is required.";
+        if (!/^[a-zA-Z0-9\/_.-]+$/.test(v)) return "Invalid characters in branch name.";
+      },
     });
     if (isCancel(name)) return;
     try {
@@ -97,10 +103,10 @@ export async function flowBranch() {
       .replace(":", "/")
       .replace("git@", "https://");
     const prUrl = `${url}/pull/new/${curr}`;
-    sh(
-      process.platform === "darwin" ? `open ${prUrl}` : `start ${prUrl}`,
-      true
-    );
+    const openCmd = process.platform === "darwin" ? "open"
+      : process.platform === "win32" ? "start"
+      : "xdg-open";
+    sh(`${openCmd} ${prUrl}`, true);
     note("Opened PR in browser", "✔ PR");
   }
 }

@@ -68,7 +68,8 @@ export async function flowRelease() {
   const s = spinner();
   try {
     s.start(pc.dim("Syncing origin..."));
-    sh("git fetch origin main", true);
+    const defaultBr = git.defaultBranch();
+    if (defaultBr) sh(`git fetch origin ${defaultBr.replace("origin/", "")}`, true);
 
     if (config.build !== "skip") {
       s.message(pc.dim("Installing dependencies..."));

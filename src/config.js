@@ -34,7 +34,13 @@ export let SHEET_WEBHOOK_URL =
   process.env.GOOGLE_SHEET_WEBHOOK_URL || globalConf.GOOGLE_SHEET_WEBHOOK_URL;
 export let OPENAI_API_KEY =
   process.env.OPENAI_API_KEY || globalConf.OPENAI_API_KEY;
-export const PM = fs.existsSync("pnpm-lock.yaml") ? "pnpm" : "npm";
+export const PM = fs.existsSync("pnpm-lock.yaml")
+  ? "pnpm"
+  : fs.existsSync("yarn.lock")
+    ? "yarn"
+    : fs.existsSync("bun.lockb")
+      ? "bun"
+      : "npm";
 
 export function updateConfig(key, value) {
   const current = loadGlobalConfig();

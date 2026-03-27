@@ -5,6 +5,7 @@
   "main": "index.js",
   "type": "module",
   "bin": {
+    "otto": "index.js",
     "otto-git-cli": "index.js",
     "otto-cli": "index.js"
   },
