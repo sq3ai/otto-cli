@@ -1,6 +1,7 @@
-import { confirm, isCancel, spinner } from "@clack/prompts";
+import { confirm, isCancel, spinner, note } from "@clack/prompts";
 import pc from "picocolors";
 import { git } from "../git/index.js";
+import { sh } from "../utils/shell.js";
 import { ui } from "../ui/index.js";
 
 /**
@@ -10,7 +11,6 @@ export async function checkForUpdates() {
   if (!git.isRepo()) return;
 
   try {
-    const { sh } = await import("../utils/shell.js");
     sh("git fetch", true);
   } catch {
     return;
@@ -40,7 +40,6 @@ export async function checkForUpdates() {
     if (isCancel(shouldPull)) process.exit(0);
 
     if (shouldPull) {
-      const { sh } = await import("../utils/shell.js");
       const s = spinner();
       s.start(pc.blue("🔄 Pulling latest changes..."));
       try {
@@ -49,7 +48,6 @@ export async function checkForUpdates() {
         ui.banner();
       } catch (e) {
         s.stop(pc.red("✖ Pull Failed"));
-        const { note } = await import("@clack/prompts");
         note(e.message);
       }
     }
