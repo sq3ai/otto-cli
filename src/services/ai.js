@@ -19,12 +19,18 @@ export async function generateCommit(diff) {
   try {
     const res = await openai.chat.completions.create({
       model: "gpt-4o-mini",
+      temperature: 0,
       messages: [
         {
-          role: "user",
+          role: "system",
           content:
-            `Analyze diff, return JSON with "msg" (conventional commit) and "desc" (technical summary):\n` +
-            diff.substring(0, 15000),
+            "You are a Git commit message generator. Analyze diffs and return a JSON object with exactly two keys: " +
+            '"msg" (a short conventional commit message, e.g. "feat: add user auth") and ' +
+            '"desc" (a brief technical summary of the changes). Return only valid JSON, no markdown.',
+        },
+        {
+          role: "user",
+          content: diff.substring(0, 15000),
         },
       ],
       response_format: { type: "json_object" },
