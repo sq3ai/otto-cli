@@ -65,12 +65,14 @@ export async function flowBranch() {
 
   if (action === "update") {
     const s = spinner();
-    s.start(pc.dim("Fetching main"));
+    const defaultBr = git.defaultBranch();
+    const branchName = defaultBr ? defaultBr.replace("origin/", "") : "main";
+    s.start(pc.dim(`Fetching ${branchName}`));
     try {
-      sh("git fetch origin main");
+      sh(`git fetch origin ${branchName}`);
       s.message(pc.dim("Pulling changes"));
-      sh("git pull origin main");
-      s.stop(pc.green("✔ Branch updated from main"));
+      sh(`git pull origin ${branchName}`);
+      s.stop(pc.green(`✔ Branch updated from ${branchName}`));
     } catch (e) {
       s.stop(pc.red("✖ Update Failed"));
       note(e.message, "Git Error");
