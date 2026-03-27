@@ -83,6 +83,10 @@ export async function flowBranch() {
     const name = await text({
       message: "Branch Name",
       placeholder: "feat/new-thing",
+      validate: (v) => {
+        if (!v) return "Branch name is required.";
+        if (!/^[a-zA-Z0-9\/_.-]+$/.test(v)) return "Invalid characters in branch name.";
+      },
     });
     if (isCancel(name)) return;
     try {
