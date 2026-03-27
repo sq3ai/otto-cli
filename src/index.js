@@ -1,7 +1,11 @@
 import { Command } from "commander";
 import { select, isCancel, outro } from "@clack/prompts";
+import { createRequire } from "module";
 import { ui } from "./ui/index.js";
 import { ensureConfig } from "./utils/setup.js";
+
+const require = createRequire(import.meta.url);
+const { version } = require("../package.json");
 import {
   checkForUpdates,
   flowRelease,
@@ -63,7 +67,7 @@ async function mainMenu() {
  */
 export async function run() {
   const program = new Command();
-  program.name("otto").description("AI-powered Release CLI").version("3.1.0");
+  program.name("otto").description("AI-powered Release CLI").version(version);
 
   program.command("release").action(async () => {
     ui.banner();
