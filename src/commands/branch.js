@@ -99,10 +99,10 @@ export async function flowBranch() {
       .replace(":", "/")
       .replace("git@", "https://");
     const prUrl = `${url}/pull/new/${curr}`;
-    sh(
-      process.platform === "darwin" ? `open ${prUrl}` : `start ${prUrl}`,
-      true
-    );
+    const openCmd = process.platform === "darwin" ? "open"
+      : process.platform === "win32" ? "start"
+      : "xdg-open";
+    sh(`${openCmd} ${prUrl}`, true);
     note("Opened PR in browser", "✔ PR");
   }
 }
