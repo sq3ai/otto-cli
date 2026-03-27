@@ -10,7 +10,7 @@ export const wrap = (s, w = 60) => {
     .split(/\s+/)
     .reduce((acc, word) => {
       const last = acc[acc.length - 1];
-      if (last && (last + word).length < w) acc[acc.length - 1] += " " + word;
+      if (last && (last + " " + word).length <= w) acc[acc.length - 1] += " " + word;
       else acc.push(word);
       return acc;
     }, [])
